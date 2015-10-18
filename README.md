@@ -26,7 +26,7 @@ The idea is to use gradle build types to add the `DebugOverlay` only to debug bu
 Please note that `com.hannesdorfmann:debugoverlay:0.2.0` will add `android.permission.SYSTEM_ALERT_WINDOW` to your apk. Hence you should avoid to use that dependency for your release `.apk`
 
 ## Features
-The api is very simple. You can simply log string messages. You can open new issues here on github to make a new feature request. If it is not to complicated and will not add a lot of new methods to the public API (dex count 65k limit for debugoverlay-noop that might be part of your release build) then it's very likely that we can add this feature to this library.
+The api is very simple. You can simply log string messages. You can open new issues here on github to make a new feature request. If it is not too complicated and will not add a lot of new methods to the public API (dex count 65k limit) then it's very likely that we can add this feature to this library.
 
 ## License
 ```
