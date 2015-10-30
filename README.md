@@ -15,8 +15,8 @@ DebugOverlay.with(context).log("My logging message");
 ## Dependencies
 Obviously you wont deliver this `DebugOverlay` with you production code in the play store .apk file. Hence this library provides two maven artifacts to include.
 ```groovy
-debugCompile('com.hannesdorfmann:debugoverlay:0.2.0') // Starts the service and displays the overlay
-releaseCompile('com.hannesdorfmann:debugoverlay-noop:0.2.0') // Does nothing
+debugCompile('com.hannesdorfmann:debugoverlay:0.2.1') // Starts the service and displays the overlay
+releaseCompile('com.hannesdorfmann:debugoverlay-noop:0.2.1') // Does nothing
 ```
 
 The idea is to use gradle build types to add the `DebugOverlay` only to debug builds.
