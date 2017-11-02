@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
@@ -42,8 +43,7 @@ class DebugOverlayView extends FrameLayout {
     int buttonHeight = dpToPx(context, 40);
     closeButton = new ImageView(context);
     closeButton.setImageResource(R.drawable.ic_close_circle);
-    closeButton.setLayoutParams(
-        new FrameLayout.LayoutParams(buttonHeight, buttonHeight, Gravity.TOP | Gravity.RIGHT));
+    closeButton.setLayoutParams(new FrameLayout.LayoutParams(buttonHeight, buttonHeight, Gravity.TOP | Gravity.END));
 
     // Logging Console
     adapter = new LoggingAdapter(context);
@@ -53,8 +53,7 @@ class DebugOverlayView extends FrameLayout {
     listView.setStackFromBottom(true);
     listView.setAdapter(adapter);
     FrameLayout.LayoutParams listViewLayoutParams =
-        new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT);
+        new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     listViewLayoutParams.topMargin = buttonHeight / 2;
     listView.setLayoutParams(listViewLayoutParams);
 
@@ -63,12 +62,17 @@ class DebugOverlayView extends FrameLayout {
     addView(closeButton);
 
     // Set View parameters
-    WindowManager.LayoutParams windowParams =
-        new WindowManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, layoutHeight,
-            WindowManager.LayoutParams.TYPE_PHONE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-            PixelFormat.TRANSLUCENT);
+    WindowManager.LayoutParams windowParams;
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      windowParams = new WindowManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, layoutHeight,
+          WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
+    } else {
+      windowParams =
+          new WindowManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, layoutHeight, WindowManager.LayoutParams.TYPE_PHONE,
+              WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
+    }
 
-    windowParams.gravity = Gravity.TOP | Gravity.LEFT;
+    windowParams.gravity = Gravity.TOP | Gravity.START;
     windowParams.x = 0;
     windowParams.y = windowDimen.y - layoutHeight;
 
