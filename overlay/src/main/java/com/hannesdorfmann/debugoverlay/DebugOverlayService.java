@@ -3,6 +3,7 @@ package com.hannesdorfmann.debugoverlay;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -42,7 +43,11 @@ public class DebugOverlayService extends Service {
       });
     }
 
-    view.addMessage(msg);
+    runOnUiThread(() -> view.addMessage(msg));
+  }
+
+  private void runOnUiThread(Runnable runnable) {
+    new Handler(getMainLooper()).post(runnable);
   }
 
   @Override public void onDestroy() {
