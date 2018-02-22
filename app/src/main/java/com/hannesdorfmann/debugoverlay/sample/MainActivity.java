@@ -2,6 +2,7 @@ package com.hannesdorfmann.debugoverlay.sample;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -9,6 +10,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Switch;
+
 import com.hannesdorfmann.debugoverlay.DebugOverlay;
 
 public class MainActivity extends AppCompatActivity {
@@ -22,15 +25,25 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
+    Switch threadSwitch = findViewById(R.id.thread_switch);
     FloatingActionButton fab = findViewById(R.id.fab);
     fab.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View view) {
         boolean showDebugOverlay = Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(MainActivity.this);
         if (showDebugOverlay) {
-          DebugOverlay.with(MainActivity.this).log("Message test " + i++);
+          final boolean inForeground = threadSwitch.isChecked();
+          if (inForeground) {
+            logMessage();
+          } else {
+            AsyncTask.execute(this::logMessage);
+          }
         } else {
           requestOverlayPermission();
         }
+      }
+
+      private void logMessage() {
+        DebugOverlay.with(MainActivity.this).log("Message test " + i++);
       }
     });
   }
