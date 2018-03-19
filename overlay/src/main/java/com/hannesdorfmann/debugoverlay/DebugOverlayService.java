@@ -11,7 +11,6 @@ import android.view.View;
  * @author Hannes Dorfmann
  */
 public class DebugOverlayService extends Service {
-
   public static class DebugOverlayServiceBinder extends Binder {
     private DebugOverlayService service;
 
@@ -33,7 +32,8 @@ public class DebugOverlayService extends Service {
 
   public void logMsg(String msg) {
     if (view == null) {
-      view = new DebugOverlayView(getApplicationContext());
+
+      view = new DebugOverlayView(getApplicationContext(), DebugOverlay.style);
       view.getCloseButton().setOnClickListener(new View.OnClickListener() {
         @Override public void onClick(View v) {
           destroyView();

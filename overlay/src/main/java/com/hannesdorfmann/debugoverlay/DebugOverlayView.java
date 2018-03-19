@@ -1,10 +1,12 @@
 package com.hannesdorfmann.debugoverlay;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.os.Build;
+import android.support.annotation.StyleRes;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
@@ -27,14 +29,15 @@ class DebugOverlayView extends FrameLayout {
   private LoggingAdapter adapter;
   private ListView listView;
 
-  public DebugOverlayView(Context context) {
+  public DebugOverlayView(Context context, @StyleRes int defStyleRes) {
     super(context);
 
     windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
     Point windowDimen = new Point();
     windowManager.getDefaultDisplay().getSize(windowDimen);
 
-    int desiredLayoutHeight = dpToPx(context, 100);
+    TypedArray typedArray = context.obtainStyledAttributes(null, R.styleable.DebugOverlayView, 0, defStyleRes);
+    int desiredLayoutHeight = typedArray.getDimensionPixelSize(R.styleable.DebugOverlayView_do_height, dpToPx(context, 100));
     int layoutHeight = desiredLayoutHeight < windowDimen.y ? desiredLayoutHeight : windowDimen.y;
 
     // Setup the GUI
@@ -46,9 +49,9 @@ class DebugOverlayView extends FrameLayout {
     closeButton.setLayoutParams(new FrameLayout.LayoutParams(buttonHeight, buttonHeight, Gravity.TOP | Gravity.END));
 
     // Logging Console
-    adapter = new LoggingAdapter(context);
+    adapter = new LoggingAdapter(context, defStyleRes);
     listView = new ListView(context);
-    listView.setBackgroundColor(Color.parseColor("#64000000"));
+    listView.setBackgroundColor(typedArray.getColor(R.styleable.DebugOverlayView_do_backgroundColor, Color.parseColor("#64000000")));
     listView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
     listView.setStackFromBottom(true);
     listView.setAdapter(adapter);
@@ -76,6 +79,7 @@ class DebugOverlayView extends FrameLayout {
     windowParams.x = 0;
     windowParams.y = windowDimen.y - layoutHeight;
 
+    typedArray.recycle();
     // Attach and display View
     windowManager.addView(this, windowParams);
   }

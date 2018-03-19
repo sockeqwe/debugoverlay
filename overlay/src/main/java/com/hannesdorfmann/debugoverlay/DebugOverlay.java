@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
+import android.support.annotation.StyleRes;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -16,10 +18,12 @@ public class DebugOverlay {
 
   private static DebugOverlay INSTANCE;
   private MessageDispatcher messageDispatcher;
+  @StyleRes
+  static int style = R.style.DefaultDebugOverlay;
 
-  private DebugOverlay(Context context) {
+  private DebugOverlay(Context context, @StyleRes int style) {
     Intent intent = new Intent(context, DebugOverlayService.class);
-
+    DebugOverlay.style = style;
     ServiceConnection serviceConnection = new ServiceConnection() {
       @Override public void onServiceConnected(ComponentName name, IBinder binder) {
         DebugOverlayService service =
@@ -42,13 +46,17 @@ public class DebugOverlay {
     }
   }
 
-  public static DebugOverlay with(Context context) {
+  public static DebugOverlay with(Context context, @StyleRes int style) {
     if (INSTANCE == null) {
-      INSTANCE = new DebugOverlay(context.getApplicationContext());
+      INSTANCE = new DebugOverlay(context.getApplicationContext(), style);
     }
 
     return INSTANCE;
   }
+
+ public static DebugOverlay with(Context context) {
+    return with(context, R.style.DefaultDebugOverlay);
+ }
 
   public DebugOverlay log(String msg) {
     messageDispatcher.enqueueMessage(msg);
