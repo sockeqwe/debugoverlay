@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <style name="DefaultDebugOverlay">
         <item name="do_backgroundColor">#64000000</item>
         <item name="do_height">100dp</item>

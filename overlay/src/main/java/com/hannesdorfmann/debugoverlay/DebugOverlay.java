@@ -19,11 +19,10 @@ public class DebugOverlay {
   private static DebugOverlay INSTANCE;
   private MessageDispatcher messageDispatcher;
   @StyleRes
-  static int style = R.style.DefaultDebugOverlay;
+  private static int style = R.style.DefaultDebugOverlay;
 
-  private DebugOverlay(Context context, @StyleRes int style) {
+  private DebugOverlay(Context context) {
     Intent intent = new Intent(context, DebugOverlayService.class);
-    DebugOverlay.style = style;
     ServiceConnection serviceConnection = new ServiceConnection() {
       @Override public void onServiceConnected(ComponentName name, IBinder binder) {
         DebugOverlayService service =
@@ -46,27 +45,33 @@ public class DebugOverlay {
     }
   }
 
-  public static DebugOverlay with(Context context, @StyleRes int style) {
-    if (INSTANCE == null) {
-      INSTANCE = new DebugOverlay(context.getApplicationContext(), style);
+  public static void init(Context context, @StyleRes int style) {
+    if (INSTANCE != null) {
+      throw new IllegalStateException("DebugOverlay is already initialized.");
     }
-
-    return INSTANCE;
+    DebugOverlay.style = style;
+    INSTANCE = new DebugOverlay(context.getApplicationContext());
   }
 
- public static DebugOverlay with(Context context) {
-    return with(context, R.style.DefaultDebugOverlay);
- }
-
-  public DebugOverlay log(String msg) {
-    messageDispatcher.enqueueMessage(msg);
-    return this;
+  public static void init(Context context) {
+    init(context, R.style.DefaultDebugOverlay);
   }
 
-  public DebugOverlay log(String fortmatedMsg, Object... paramters) {
+  public static void log(String msg) {
+    if (INSTANCE == null) {
+      throw new IllegalStateException("DebugOverlay must to be initialized.");
+    }
+    INSTANCE.messageDispatcher.enqueueMessage(msg);
+  }
+
+  @StyleRes
+  static int getStyle() {
+    return style;
+  }
+
+  public void log(String fortmatedMsg, Object... paramters) {
     String msg = String.format(fortmatedMsg, paramters);
     log(msg);
-    return this;
   }
 
   /**

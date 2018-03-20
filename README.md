@@ -7,9 +7,30 @@ Typically in android you would log some app internals for debugging puropose by 
 
 This tiny library adds an overlay as independet `Window` on top of your android application. You can close this `DebugOverlay`-Window by clicking on the close button. The window will then automatically pop up again when the next message to log is detected.
 
-## How to use it
+## How to initialize
+- Simple initialize:
 ```java
-DebugOverlay.with(context).log("My logging message");
+DebugOverlay.init(context);
+```
+- Initialize with a custom style:
+```java
+DebugOverlay.init(context, R.style.CustomDebugOverlay);
+```
+
+## How to log a message?
+```java
+DebugOverlay.log("My logging message");
+```
+
+### How to define a style?
+There are some properties that you can use to get a custom style
+```xml
+    <style name="DefaultDebugOverlay">
+        <item name="do_backgroundColor">#64000000</item>
+        <item name="do_height">100dp</item>
+        <item name="do_textColor">#FFF</item>
+        <item name="do_textSize">14sp</item>
+    </style>
 ```
 
 ## Dependencies

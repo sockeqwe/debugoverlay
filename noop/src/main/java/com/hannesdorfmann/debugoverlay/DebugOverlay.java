@@ -8,21 +8,22 @@ import android.content.Context;
  * @author Hannes Dorfmann
  */
 public class DebugOverlay {
+  private static DebugOverlay INSTANCE;
 
-  private static final DebugOverlay INSTANCE = new DebugOverlay();
+  private DebugOverlay() {}
 
-  private DebugOverlay() {
+  public static void init(Context context, int style) {
+    if (INSTANCE != null) {
+      throw new IllegalStateException("DebugOverlay is already initialized.");
+    }
+    INSTANCE = new DebugOverlay();
   }
 
-  public static DebugOverlay with(Context context) {
-    return INSTANCE;
+  public static void init(Context context) {
+    init(context, 0);
   }
 
-  public DebugOverlay log(String msg) {
-    return this;
-  }
+  public static void log(String msg) {}
 
-  public DebugOverlay log(String fortmatedMsg, Object... paramters) {
-    return this;
-  }
+  public void log(String fortmatedMsg, Object... paramters) {}
 }
