@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DebugOverlayView">
+        <attr format="color" name="do_backgroundColor" />
+        <attr format="color" name="do_textColor" />
+        <attr format="dimension" name="do_height" />
+        <attr format="dimension" name="do_textSize" />
+    </declare-styleable>
+</resources>

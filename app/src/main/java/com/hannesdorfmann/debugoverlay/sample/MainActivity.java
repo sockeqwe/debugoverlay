@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+    DebugOverlay.init(MainActivity.this);
     Toolbar toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
       @Override public void onClick(View view) {
         boolean showDebugOverlay = Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(MainActivity.this);
         if (showDebugOverlay) {
-          DebugOverlay.with(MainActivity.this).log("Message test " + i++);
+          DebugOverlay.log("Message test " + i++);
         } else {
           requestOverlayPermission();
         }
@@ -49,10 +50,10 @@ public class MainActivity extends AppCompatActivity {
     if (resultCode == RESULT_OK && requestCode == APP_PERMISSIONS) {
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         if (Settings.canDrawOverlays(this)) {
-          DebugOverlay.with(MainActivity.this).log("Message test " + i++);
+          DebugOverlay.log("Message test " + i++);
         }
       } else {
-        DebugOverlay.with(MainActivity.this).log("Message test " + i++);
+        DebugOverlay.log("Message test " + i++);
       }
     }
 

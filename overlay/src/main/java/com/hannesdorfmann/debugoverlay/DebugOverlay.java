@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
+import android.support.annotation.StyleRes;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -16,10 +18,11 @@ public class DebugOverlay {
 
   private static DebugOverlay INSTANCE;
   private MessageDispatcher messageDispatcher;
+  @StyleRes
+  private static int style = R.style.DefaultDebugOverlay;
 
   private DebugOverlay(Context context) {
     Intent intent = new Intent(context, DebugOverlayService.class);
-
     ServiceConnection serviceConnection = new ServiceConnection() {
       @Override public void onServiceConnected(ComponentName name, IBinder binder) {
         DebugOverlayService service =
@@ -42,23 +45,33 @@ public class DebugOverlay {
     }
   }
 
-  public static DebugOverlay with(Context context) {
-    if (INSTANCE == null) {
-      INSTANCE = new DebugOverlay(context.getApplicationContext());
+  public static void init(Context context, @StyleRes int style) {
+    if (INSTANCE != null) {
+      throw new IllegalStateException("DebugOverlay is already initialized.");
     }
-
-    return INSTANCE;
+    DebugOverlay.style = style;
+    INSTANCE = new DebugOverlay(context.getApplicationContext());
   }
 
-  public DebugOverlay log(String msg) {
-    messageDispatcher.enqueueMessage(msg);
-    return this;
+  public static void init(Context context) {
+    init(context, R.style.DefaultDebugOverlay);
   }
 
-  public DebugOverlay log(String fortmatedMsg, Object... paramters) {
+  public static void log(String msg) {
+    if (INSTANCE == null) {
+      throw new IllegalStateException("DebugOverlay must to be initialized.");
+    }
+    INSTANCE.messageDispatcher.enqueueMessage(msg);
+  }
+
+  @StyleRes
+  static int getStyle() {
+    return style;
+  }
+
+  public void log(String fortmatedMsg, Object... paramters) {
     String msg = String.format(fortmatedMsg, paramters);
     log(msg);
-    return this;
   }
 
   /**
