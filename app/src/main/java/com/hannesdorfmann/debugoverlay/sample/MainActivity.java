@@ -27,7 +27,12 @@ public class MainActivity extends AppCompatActivity {
       @Override public void onClick(View view) {
         boolean showDebugOverlay = Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(MainActivity.this);
         if (showDebugOverlay) {
-          DebugOverlay.with(MainActivity.this).log("Message test " + i++);
+          new Thread(){
+            @Override
+            public void run() {
+              DebugOverlay.with(MainActivity.this).log("Message test " + i++);
+            }
+          }.start();
         } else {
           requestOverlayPermission();
         }
