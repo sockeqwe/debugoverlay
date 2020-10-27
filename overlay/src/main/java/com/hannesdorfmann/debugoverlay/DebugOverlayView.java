@@ -23,6 +23,8 @@ import android.widget.ListView;
 class DebugOverlayView extends FrameLayout {
 
   private ImageView closeButton;
+  private ImageView upButton;
+  private ImageView downButton;
   private WindowManager windowManager;
   private LoggingAdapter adapter;
   private ListView listView;
@@ -34,16 +36,23 @@ class DebugOverlayView extends FrameLayout {
     Point windowDimen = new Point();
     windowManager.getDefaultDisplay().getSize(windowDimen);
 
-    int desiredLayoutHeight = dpToPx(context, 100);
-    int layoutHeight = desiredLayoutHeight < windowDimen.y ? desiredLayoutHeight : windowDimen.y;
+    // Use 2/3s of screen height for overlay
+    int desiredLayoutHeight = windowDimen.y * 2 / 3;
+    int layoutHeight = Math.min(desiredLayoutHeight, windowDimen.y);
 
     // Setup the GUI
 
-    // Close Button
+    // Buttons
     int buttonHeight = dpToPx(context, 40);
     closeButton = new ImageView(context);
     closeButton.setImageResource(R.drawable.ic_close_circle);
     closeButton.setLayoutParams(new FrameLayout.LayoutParams(buttonHeight, buttonHeight, Gravity.TOP | Gravity.END));
+    upButton = new ImageView(context);
+    upButton.setImageResource(R.drawable.ic_up_circle);
+    upButton.setLayoutParams(new FrameLayout.LayoutParams(buttonHeight, buttonHeight, Gravity.CENTER | Gravity.END));
+    downButton = new ImageView(context);
+    downButton.setImageResource(R.drawable.ic_down_circle);
+    downButton.setLayoutParams(new FrameLayout.LayoutParams(buttonHeight, buttonHeight, Gravity.BOTTOM | Gravity.END));
 
     // Logging Console
     adapter = new LoggingAdapter(context);
@@ -60,6 +69,27 @@ class DebugOverlayView extends FrameLayout {
     // Add views
     addView(listView);
     addView(closeButton);
+    addView(upButton);
+    addView(downButton);
+
+    upButton.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+          int firstVisiblePosition = listView.getFirstVisiblePosition();
+          int lastVisiblePosition = listView.getLastVisiblePosition();
+            listView.smoothScrollToPosition(firstVisiblePosition - (lastVisiblePosition - firstVisiblePosition));
+        }
+      }
+    );
+
+    downButton.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+          int lastVisiblePosition = listView.getLastVisiblePosition();
+          listView.smoothScrollToPosition(lastVisiblePosition+1);
+        }
+      }
+    );
 
     // Set View parameters
     WindowManager.LayoutParams windowParams;
@@ -74,7 +104,7 @@ class DebugOverlayView extends FrameLayout {
 
     windowParams.gravity = Gravity.TOP | Gravity.START;
     windowParams.x = 0;
-    windowParams.y = windowDimen.y - layoutHeight;
+    windowParams.y = 100;
 
     // Attach and display View
     windowManager.addView(this, windowParams);
